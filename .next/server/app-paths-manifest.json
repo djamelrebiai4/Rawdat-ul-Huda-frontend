@@ -1,0 +1,16 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/[locale]/page": "app/[locale]/page.js",
+  "/[locale]/tajweed-course/page": "app/[locale]/tajweed-course/page.js",
+  "/[locale]/arabic-course/page": "app/[locale]/arabic-course/page.js",
+  "/[locale]/pricing/page": "app/[locale]/pricing/page.js",
+  "/[locale]/about/page": "app/[locale]/about/page.js",
+  "/[locale]/faq/page": "app/[locale]/faq/page.js",
+  "/[locale]/blog/page": "app/[locale]/blog/page.js",
+  "/[locale]/contact/page": "app/[locale]/contact/page.js",
+  "/[locale]/locations/page": "app/[locale]/locations/page.js",
+  "/[locale]/locations/[country]/page": "app/[locale]/locations/[country]/page.js",
+  "/[locale]/blog/[slug]/page": "app/[locale]/blog/[slug]/page.js",
+  "/[locale]/privacy-policy/page": "app/[locale]/privacy-policy/page.js",
+  "/[locale]/terms/page": "app/[locale]/terms/page.js"
+}
