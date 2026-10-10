@@ -44,14 +44,9 @@ export function Header() {
       >
         <div className="mt-6 nav-border-beam nav-dark-glass rounded-full">
           <div className="relative px-6 md:px-8 py-3 md:py-4 flex items-center justify-between overflow-visible max-w-full">
-            {/* Watermark text at bottom */}
-            <div className="nav-watermark">
-              Rawdat ul-Huda Quran Academy
-            </div>
-
             {/* Left links */}
             <div className="flex-1 flex items-center justify-start">
-              <div className="hidden md:flex items-center gap-10 h-full" role="navigation" aria-label="Main">
+              <div className="hidden xl:flex items-center gap-10 h-full" role="navigation" aria-label="Main">
                 <NavLink href="/" isActive={false}>
                   {t("home")}
                 </NavLink>
@@ -68,17 +63,17 @@ export function Header() {
 
             {/* Right links - symmetric to left */}
             <div className="flex-1 flex items-center justify-end gap-4">
-              <div className="hidden md:flex items-center gap-10 h-full" role="navigation" aria-label="Secondary">
+              <div className="hidden xl:flex items-center gap-10 h-full" role="navigation" aria-label="Secondary">
                 <NavLink href="/pricing">{t("pricing")}</NavLink>
                 <NavLink href="/faq">{t("faq")}</NavLink>
                 <NavLink href="/blog">{t("blog")}</NavLink>
               </div>
 
               {/* Language Switcher */}
-              <LanguageSwitcher className="hidden md:inline-flex" />
+              <LanguageSwitcher className="hidden xl:inline-flex" />
 
               {/* Book Trial CTA - responsive text: "Book Now" on md, "Book Free Trial" on lg+ */}
-              <ButtonLink href="/contact" variant="nav-cta" size="md" className="hidden md:inline-flex">
+              <ButtonLink href="/contact" variant="nav-cta" size="md" className="hidden sm:inline-flex">
                 <span className="hidden lg:inline">{t("bookTrial")}</span>
                 <span className="inline lg:hidden">{t("bookTrialShort")}</span>
               </ButtonLink>
@@ -90,7 +85,7 @@ export function Header() {
                 onClick={() => setMobileOpen((v) => !v)}
                 aria-expanded={mobileOpen}
                 aria-label={mobileOpen ? "Close menu" : "Open menu"}
-                className="md:hidden flex items-center justify-center p-2 text-zinc-500 hover:text-white transition-colors"
+                className="xl:hidden flex items-center justify-center p-2 text-zinc-500 hover:text-white transition-colors"
               >
                 {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>

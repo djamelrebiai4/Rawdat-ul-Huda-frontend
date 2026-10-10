@@ -49,7 +49,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     <div
       ref={menuRef}
       id="mobile-menu"
-      className={cn("mobile-menu absolute left-0 right-0 p-6 rounded-3xl flex flex-col gap-4 md:hidden", "top-[calc(var(--navbar-height)+1.5rem)]")}
+      className={cn("mobile-menu absolute left-0 right-0 max-h-[calc(100dvh-var(--navbar-height)-1.5rem)] overflow-y-auto p-6 rounded-3xl flex flex-col gap-4 xl:hidden", "top-[calc(var(--navbar-height)+1.5rem)]")}
       role="dialog"
       aria-label="Mobile menu"
     >
