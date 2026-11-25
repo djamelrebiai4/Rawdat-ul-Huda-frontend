@@ -64,7 +64,9 @@ export async function signInAction(formData: FormData) {
 
   if (!response) redirect("/admin/login?setup=required");
   if (response.status === 403) redirect("/admin/login?unauthorized=1");
-  if (!response.ok) redirect("/admin/login?error=credentials");
+  if (response.status === 401) redirect("/admin/login?error=credentials");
+  if (response.status === 429) redirect("/admin/login?error=rate-limit");
+  if (!response.ok) redirect("/admin/login?error=service");
 
   const { token } = await response.json();
   (await cookies()).set(SESSION_COOKIE_NAME, token, SESSION_COOKIE_OPTIONS);

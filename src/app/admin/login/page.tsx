@@ -9,6 +9,8 @@ export default async function AdminLoginPage({ searchParams }: Props) {
   const setupRequired = query.setup === "required";
   const unauthorized = query.unauthorized === "1";
   const invalidCredentials = query.error === "credentials";
+  const rateLimited = query.error === "rate-limit";
+  const serviceError = query.error === "service";
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-muted px-4 py-12">
@@ -44,6 +46,16 @@ export default async function AdminLoginPage({ searchParams }: Props) {
             </label>
             {invalidCredentials && (
               <p role="alert" className="text-sm text-destructive">Email or password is incorrect.</p>
+            )}
+            {rateLimited && (
+              <p role="alert" className="text-sm text-destructive">
+                Too many sign-in attempts. Please wait before trying again.
+              </p>
+            )}
+            {serviceError && (
+              <p role="alert" className="text-sm text-destructive">
+                Sign-in is temporarily unavailable. Please try again later.
+              </p>
             )}
             {unauthorized && (
               <p role="alert" className="text-sm text-destructive">This account is not authorized to manage the site.</p>
