@@ -5,20 +5,22 @@ import { Link } from "@/i18n/navigation";
 import { PageHero } from "@/components/sections/page-hero";
 import { Container } from "@/components/ui/container";
 import { ArrowRight } from "lucide-react";
-import { buildMetadata, breadcrumbSchema } from "@/lib/seo";
+import { buildPageMetadata, breadcrumbSchema } from "@/lib/seo";
 import { JsonLd } from "@/components/json-ld";
 
 type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export function generateMetadata({ params }: Props): Metadata {
-  return buildMetadata({
-    title: "Blog — Learn Quran, Tajweed & Arabic | Rawdat ul-Huda Quran Academy",
-    description:
-      "Guides and insights: how long Tajweed takes, rules for beginners, learning Quran as an adult, and Quranic Arabic vs conversational Arabic.",
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return buildPageMetadata({
+    pageKey: "blog",
+    fallbackTitle: "Quran, Tajweed & Arabic Learning Blog | Rawdat ul-Huda",
+    fallbackDescription:
+      "Explore practical guides on Tajweed rules, Quran reading for adults, Quran learning timelines, and choosing the right Arabic course.",
     path: "/blog",
-    locale: "en",
+    locale,
   });
 }
 
@@ -41,7 +43,7 @@ export default async function BlogPage({ params }: Props) {
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: "Blog", path: "/blog" },
-          ]),
+          ], locale),
         ]}
       />
       <PageHero eyebrow="Blog" title={t("title")} subtitle={t("subtitle")} />

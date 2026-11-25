@@ -2,18 +2,21 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { PageHero } from "@/components/sections/page-hero";
 import { Container } from "@/components/ui/container";
-import { buildMetadata } from "@/lib/seo";
+import { buildPageMetadata } from "@/lib/seo";
 
 type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export function generateMetadata({ params }: Props): Metadata {
-  return buildMetadata({
-    title: "Privacy Policy | Rawdat ul-Huda Quran Academy",
-    description: "How Rawdat ul-Huda Quran Academy collects, uses and protects your personal information.",
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return buildPageMetadata({
+    pageKey: "privacyPolicy",
+    fallbackTitle: "Privacy Policy | Rawdat ul-Huda",
+    fallbackDescription:
+      "Read how Rawdat ul-Huda collects, uses, and protects personal information submitted through our Quran academy website and contact forms.",
     path: "/privacy-policy",
-    locale: "en",
+    locale,
   });
 }
 

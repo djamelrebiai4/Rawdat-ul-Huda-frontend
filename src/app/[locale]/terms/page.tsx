@@ -2,18 +2,21 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { PageHero } from "@/components/sections/page-hero";
 import { Container } from "@/components/ui/container";
-import { buildMetadata } from "@/lib/seo";
+import { buildPageMetadata } from "@/lib/seo";
 
 type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export function generateMetadata({ params }: Props): Metadata {
-  return buildMetadata({
-    title: "Terms & Conditions | Rawdat ul-Huda Quran Academy",
-    description: "Terms and conditions for Rawdat ul-Huda Quran Academy online Quran and Arabic classes.",
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return buildPageMetadata({
+    pageKey: "terms",
+    fallbackTitle: "Terms & Conditions | Rawdat ul-Huda",
+    fallbackDescription:
+      "Review the terms for Rawdat ul-Huda online Quran, Tajweed, and Arabic classes, including payments, cancellations, rescheduling, and refunds.",
     path: "/terms",
-    locale: "en",
+    locale,
   });
 }
 

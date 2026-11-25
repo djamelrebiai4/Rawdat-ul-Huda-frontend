@@ -6,7 +6,7 @@ import { PageHero } from "@/components/sections/page-hero";
 import { CtaSection } from "@/components/sections/cta-section";
 import { Container } from "@/components/ui/container";
 import { ArrowRight } from "lucide-react";
-import { buildMetadata, breadcrumbSchema } from "@/lib/seo";
+import { buildPageMetadata, breadcrumbSchema } from "@/lib/seo";
 import { JsonLd } from "@/components/json-ld";
 
 type Props = {
@@ -20,13 +20,15 @@ const countries = [
   { slug: "pakistan", flag: "🇵🇰" },
 ];
 
-export function generateMetadata({ params }: Props): Metadata {
-  return buildMetadata({
-    title: "Online Quran & Arabic Classes by Country | Rawdat ul-Huda Quran Academy",
-    description:
-      "1-on-1 Tajweed, Arabic and Noorani Qaida classes scheduled around your timezone — serving students in the USA, UK, Canada, Pakistan and worldwide.",
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return buildPageMetadata({
+    pageKey: "locations",
+    fallbackTitle: "Online Quran Classes Worldwide | Rawdat ul-Huda",
+    fallbackDescription:
+      "Join online Tajweed, Quran, and Arabic classes from the USA, UK, Canada, Pakistan, or anywhere worldwide, with lessons scheduled to your timezone.",
     path: "/locations",
-    locale: "en",
+    locale,
   });
 }
 
@@ -44,7 +46,7 @@ export default async function LocationsPage({ params }: Props) {
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: "Locations", path: "/locations" },
-          ]),
+          ], locale),
         ]}
       />
       <PageHero eyebrow="Locations" title={t("indexTitle")} subtitle={t("indexSubtitle")} />

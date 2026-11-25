@@ -7,20 +7,22 @@ import { ContactForm } from "@/components/forms/contact-form";
 import { TrialForm } from "@/components/forms/trial-form";
 import { WhatsAppIcon } from "@/components/icons/whatsapp";
 import { whatsappLink } from "@/lib/site";
-import { buildMetadata, breadcrumbSchema } from "@/lib/seo";
+import { buildPageMetadata, breadcrumbSchema } from "@/lib/seo";
 import { JsonLd } from "@/components/json-ld";
 
 type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export function generateMetadata({ params }: Props): Metadata {
-  return buildMetadata({
-    title: "Contact Us — Book a Free Trial | Rawdat ul-Huda Quran Academy",
-    description:
-      "Contact Rawdat ul-Huda Quran Academy to book your free trial class. Message us on WhatsApp or use the form — no payment required upfront.",
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return buildPageMetadata({
+    pageKey: "contact",
+    fallbackTitle: "Book a Free Quran Class | Rawdat ul-Huda",
+    fallbackDescription:
+      "Book a free online Quran or Arabic trial class with Rawdat ul-Huda. Contact our teachers on WhatsApp or send your learning goals through the form.",
     path: "/contact",
-    locale: "en",
+    locale,
   });
 }
 
@@ -28,6 +30,7 @@ export default async function ContactPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("contact");
+  const siteT = await getTranslations("site");
 
   return (
     <>
@@ -36,7 +39,7 @@ export default async function ContactPage({ params }: Props) {
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: "Contact", path: "/contact" },
-          ]),
+          ], locale),
         ]}
       />
       <PageHero eyebrow="Contact" title={t("title")} subtitle={t("subtitle")} />
@@ -51,7 +54,7 @@ export default async function ContactPage({ params }: Props) {
                 </h2>
                 <p className="mt-2 text-base text-muted-foreground">{t("whatsappText")}</p>
                 <a
-                  href={whatsappLink("")}
+                  href={whatsappLink("", siteT("whatsappNumber"))}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-6 inline-flex items-center gap-2.5 rounded-md bg-sage-600 px-6 py-3 text-sm font-semibold text-cream-50 transition-colors hover:bg-sage-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2"

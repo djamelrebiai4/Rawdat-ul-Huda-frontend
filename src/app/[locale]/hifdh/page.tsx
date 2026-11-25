@@ -7,20 +7,22 @@ import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2 } from "lucide-react";
-import { buildMetadata, courseSchema, breadcrumbSchema } from "@/lib/seo";
+import { buildPageMetadata, courseSchema, breadcrumbSchema } from "@/lib/seo";
 import { JsonLd } from "@/components/json-ld";
 
 type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export function generateMetadata({ params }: Props): Metadata {
-  return buildMetadata({
-    title: "Hifdh Program — Quran Memorization | Rawdat ul-Huda Quran Academy",
-    description:
-      "1-on-1 Quran memorization (Hifdh) program with structured revision system, qualified teachers, and personalized pace. Book a free trial.",
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return buildPageMetadata({
+    pageKey: "hifdh",
+    fallbackTitle: "Online Quran Memorization (Hifdh) | Rawdat ul-Huda",
+    fallbackDescription:
+      "Memorize the Quran with one-to-one Hifdh lessons, structured revision, qualified teachers, and a pace tailored to you. Book a free trial class.",
     path: "/hifdh",
-    locale: "en",
+    locale,
   });
 }
 
@@ -42,16 +44,15 @@ export default async function HifdhPage({ params }: Props) {
       <JsonLd
         data={[
           courseSchema({
-            name: "Hifdh Program",
-            description:
-              "1-on-1 Quran memorization with structured revision, qualified teachers, and personalized pace.",
+            name: t("title"),
+            description: t("subtitle"),
             locale,
             path: "/hifdh",
           }),
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: "Hifdh Program", path: "/hifdh" },
-          ]),
+          ], locale),
         ]}
       />
       <PageHero eyebrow="Program" title={t("title")} subtitle={t("subtitle")} tall />

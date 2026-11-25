@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Container } from "@/components/ui/container";
-import { whatsappLink, site } from "@/lib/site";
+import { whatsappLink } from "@/lib/site";
 
 const programs = [
   { key: "hifdh", href: "/hifdh" },
@@ -21,6 +21,7 @@ const company = [
 export function Footer() {
   const t = useTranslations("footer");
   const nav = useTranslations("nav");
+  const siteT = useTranslations("site");
 
   return (
     <footer className="border-t border-border bg-muted">
@@ -104,7 +105,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href={whatsappLink("")}
+                  href={whatsappLink("", siteT("whatsappNumber"))}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-muted-foreground transition-colors hover:text-sage-600"
@@ -125,7 +126,7 @@ export function Footer() {
             <span className="text-terracotta-500" aria-hidden="true">
               ۞
             </span>{" "}
-            {site.name}
+            {siteT("name")}
           </p>
         </div>
       </Container>

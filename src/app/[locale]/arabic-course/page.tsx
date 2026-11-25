@@ -7,20 +7,22 @@ import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, MessageSquareText, CheckCircle2 } from "lucide-react";
-import { buildMetadata, courseSchema, breadcrumbSchema } from "@/lib/seo";
+import { buildPageMetadata, courseSchema, breadcrumbSchema } from "@/lib/seo";
 import { JsonLd } from "@/components/json-ld";
 
 type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export function generateMetadata({ params }: Props): Metadata {
-  return buildMetadata({
-    title: "Arabic Course — Quranic & Conversational | Rawdat ul-Huda Quran Academy",
-    description:
-      "1-on-1 Arabic classes online. Choose Quranic Arabic to understand the Quran, or conversational Arabic. Book a free trial.",
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return buildPageMetadata({
+    pageKey: "arabic",
+    fallbackTitle: "Online Arabic Classes: Quranic & Spoken | Rawdat ul-Huda",
+    fallbackDescription:
+      "Choose one-to-one online Quranic Arabic or conversational Arabic classes. Follow a personal learning plan and book a free trial lesson.",
     path: "/arabic-course",
-    locale: "en",
+    locale,
   });
 }
 
@@ -41,16 +43,15 @@ export default async function ArabicCoursePage({ params }: Props) {
       <JsonLd
         data={[
           courseSchema({
-            name: "Arabic Course",
-            description:
-              "1-on-1 Arabic classes: Quranic Arabic (understand the Quran) or conversational Arabic.",
+            name: t("title"),
+            description: t("subtitle"),
             locale,
             path: "/arabic-course",
           }),
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: "Arabic Course", path: "/arabic-course" },
-          ]),
+          ], locale),
         ]}
       />
       <PageHero eyebrow="Course" title={t("title")} subtitle={t("subtitle")} />

@@ -7,7 +7,7 @@ import { CtaSection } from "@/components/sections/cta-section";
 import { Container } from "@/components/ui/container";
 import { Badge } from "@/components/ui/badge";
 import { Clock } from "lucide-react";
-import { buildMetadata, breadcrumbSchema } from "@/lib/seo";
+import { buildPageMetadata, breadcrumbSchema } from "@/lib/seo";
 import { JsonLd } from "@/components/json-ld";
 
 type Props = {
@@ -43,9 +43,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     timezoneNote: string;
   };
 
-  return buildMetadata({
-    title: page.title,
-    description: page.text,
+  return buildPageMetadata({
+    pageKey: `locationPages.${country}`,
+    fallbackTitle: `${page.title} | Rawdat ul-Huda`,
+    fallbackDescription: page.text,
     path: `/locations/${country}`,
     locale,
   });
@@ -73,8 +74,8 @@ export default async function CountryPage({ params }: Props) {
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: "Locations", path: "/locations" },
-            { name: country.toUpperCase(), path: `/locations/${country}` },
-          ]),
+            { name: page.title, path: `/locations/${country}` },
+          ], locale),
         ]}
       />
       <PageHero

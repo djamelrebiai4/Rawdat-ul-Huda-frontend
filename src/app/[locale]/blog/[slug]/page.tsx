@@ -28,7 +28,13 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
-  const t = await getTranslations("blog");
+  const [t, otherLocaleTranslations] = await Promise.all([
+    getTranslations({ locale, namespace: "blog" }),
+    getTranslations({
+      locale: locale === "en" ? "ar" : "en",
+      namespace: "blog",
+    }),
+  ]);
   const posts = t.raw("posts") as { slug: string; title: string; excerpt: string }[];
   const post = posts.find((p) => p.slug === slug);
 
@@ -36,13 +42,35 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     notFound();
   }
 
+  const postIndex = posts.findIndex((item) => item.slug === slug);
+  const otherPosts = otherLocaleTranslations.raw("posts") as {
+    slug: string;
+  }[];
+  const otherSlug = otherPosts[postIndex]?.slug ?? slug;
+  const alternatePaths = {
+    [locale]: `/blog/${slug}`,
+    [locale === "en" ? "ar" : "en"]: `/blog/${otherSlug}`,
+  };
+
   return buildMetadata({
-    title: post.title,
-    description: post.excerpt,
+    title:
+      "seoTitle" in post && typeof post.seoTitle === "string" && post.seoTitle.trim()
+        ? post.seoTitle
+        : post.title,
+    description:
+      "metaDescription" in post &&
+      typeof post.metaDescription === "string" &&
+      post.metaDescription.trim()
+        ? post.metaDescription
+        : post.excerpt,
     path: `/blog/${slug}`,
     locale,
+    alternatePaths,
     type: "article",
-    publishedTime: postDates[slug],
+    publishedTime:
+      "publishedTime" in post && typeof post.publishedTime === "string"
+        ? post.publishedTime
+        : postDates[slug],
   });
 }
 
@@ -56,6 +84,9 @@ export default async function BlogPostPage({ params }: Props) {
     title: string;
     excerpt: string;
     content: string;
+    seoTitle?: string;
+    metaDescription?: string;
+    publishedTime?: string;
   }[];
   const post = posts.find((p) => p.slug === slug);
 
@@ -65,6 +96,7 @@ export default async function BlogPostPage({ params }: Props) {
 
   const paragraphs = post.content.split("\n").filter((p) => p.trim() !== "");
   const related = posts.filter((p) => p.slug !== slug).slice(0, 2);
+  const publishedTime = post.publishedTime || postDates[slug];
 
   return (
     <article>
@@ -72,16 +104,17 @@ export default async function BlogPostPage({ params }: Props) {
         data={[
           blogPostingSchema({
             title: post.title,
-            description: post.excerpt,
+            description: post.metaDescription || post.excerpt,
             path: `/blog/${slug}`,
-            publishedTime: postDates[slug],
+            publishedTime,
             author: "Rawdat ul-Huda Quran Academy",
+            locale,
           }),
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: "Blog", path: "/blog" },
             { name: post.title, path: `/blog/${slug}` },
-          ]),
+          ], locale),
         ]}
       />
       <section className="relative overflow-hidden bg-brown-900 py-16 sm:py-20">
@@ -97,10 +130,16 @@ export default async function BlogPostPage({ params }: Props) {
           <h1 className="mt-6 text-balance font-display text-3xl font-semibold leading-tight text-cream-50 sm:text-4xl">
             {post.title}
           </h1>
-          <p className="mt-4 flex items-center gap-2 text-sm text-sage-100/70">
-            <CalendarDays className="h-4 w-4" aria-hidden="true" />
-            {t("publishedOn")} {new Date(postDates[slug]).toLocaleDateString(locale === "ar" ? "ar-EG" : "en-US", { year: "numeric", month: "long", day: "numeric" })}
-          </p>
+          {publishedTime && (
+            <p className="mt-4 flex items-center gap-2 text-sm text-sage-100/70">
+              <CalendarDays className="h-4 w-4" aria-hidden="true" />
+              {t("publishedOn")}{" "}
+              {new Date(publishedTime).toLocaleDateString(
+                locale === "ar" ? "ar-EG" : "en-US",
+                { year: "numeric", month: "long", day: "numeric" },
+              )}
+            </p>
+          )}
         </div>
       </section>
 

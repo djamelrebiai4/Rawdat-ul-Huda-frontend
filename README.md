@@ -8,62 +8,67 @@ Modern rebuild of moddakir.com: a conversion-focused site for 1-on-1 Tajweed, Ar
 - **Tailwind CSS v4** (CSS-first `@theme` configuration)
 - **next-intl** (Arabic RTL + English LTR, locale-prefixed routing `/en`, `/ar`)
 - **lucide-react** icons
+- **Separate API:** Express service in `../backend`; the frontend does not connect to Supabase directly.
 
 ## Getting Started
 
+Run these commands from the shared `web/` workspace root. Start the API from one terminal:
+
 ```bash
-cd web
+cd backend
+cp .env.example .env
 npm install
-npm run dev        # http://localhost:3000
-npm run build      # production build (45 static pages)
-npm run start      # serve production build
+npm run dev        # http://localhost:4000
+```
+
+Set `BACKEND_API_URL=http://localhost:4000` in `frontend/.env.local`, then start the website from another terminal:
+
+```bash
+cd frontend
+pnpm install
+pnpm dev           # http://localhost:3000
+pnpm build
+pnpm start
 ```
 
 ## Structure
 
 ```
 web/
-├── messages/            # en.json + ar.json translation files (all site content)
-├── src/
-│   ├── app/[locale]/    # Pages: home, tajweed-course, arabic-course, noorani-qaida,
-│   │                    #   about, pricing, faq, locations/[country], blog/[slug],
-│   │                    #   contact, privacy-policy, terms
-│   ├── components/
-│   │   ├── ui/          # Button, ButtonLink, Accordion, Badge, Input, Select, Textarea...
-│   │   ├── layout/      # Header (with mobile nav), Footer, LanguageSwitcher, FloatingWhatsApp
-│   │   ├── sections/    # Hero, TrustBar, ProgramCards, HowItWorks, Testimonials, CTA...
-│   │   └── forms/       # ContactForm, TrialForm (submit via WhatsApp deep link)
-│   ├── lib/
-│   │   ├── site.ts      # ⚠️ EDIT ME: WhatsApp number, email, socials
-│   │   └── seo.ts       # Metadata + JSON-LD schema builders
-│   └── i18n/            # next-intl routing/navigation/request config
-├── next-intl.config.ts  # Locale configuration
-└── public/              # favicon.svg, og-image.png, logo.png
+├── backend/            # Express REST API; owns authentication and all Supabase access
+├── supabase/migrations/# database schema and owner membership policies
+└── frontend/
+	├── messages/        # en.json + ar.json fallback content
+	├── src/
+	│   ├── app/[locale]/ # Localized public pages
+	│   ├── components/  # Layout, page sections, forms, and UI controls
+	│   ├── lib/         # API client, fallback site details, SEO helpers
+	│   └── i18n/        # next-intl routing and request config
+	├── next-intl.config.ts
+	└── public/          # favicon.svg, og-image.png, logo.png
 ```
 
-## Editing Content
+## Site Owner Management
 
-All site copy lives in `messages/en.json` and `messages/ar.json`. Add or edit any page text there — keys are namespaced per page (e.g. `tajweed.curriculum.levels`).
+The owner signs in at `/admin/login`. Page content, pricing, and public contact details are saved through the separate API. Translation JSON files remain the fallback defaults when no override has been saved.
+
+Run the SQL migration in `../supabase/migrations/20261012000000_owner_cms.sql`, create the owner's account in Supabase Auth, then add that account's user ID to `public.site_admins`. Set Supabase credentials and `SESSION_SECRET` only in `backend/.env`. Never put the service-role key or session secret in the frontend environment.
 
 ## Before Launch — Replace Placeholders
 
-1. `src/lib/site.ts` — WhatsApp number, email, social URLs
-2. `messages/*.json` — trust bar stats (10+ years, 500+ students, etc.), testimonials, pricing tiers, teacher credentials/journey on About page
-3. `public/og-image.png` — replace with branded image containing your photo/logo
-4. `sitemap.ts` + `robots.ts` — domain is already set to `https://moddakir.com`
+1. Confirm the site details, prices, testimonials, and teacher information in `/admin`.
+2. `public/og-image.png` — replace with branded image containing your photo/logo.
+3. Confirm `site.url` in `src/lib/site.ts` matches the production domain.
 
 ## SEO
 
-- Per-page meta titles/descriptions (unique per page + locale)
-- JSON-LD: Organization (all pages), Course (3 course pages), FAQPage (/faq), BlogPosting (blog posts), BreadcrumbList (all pages)
-- Canonical + hreflang alternates for en/ar
-- Static sitemap.xml and robots.txt at `/sitemap.xml` and `/robots.txt`
-- Next.js `<Image>`-free static site — all pages SSG prerendered
+- Public pages are server-rendered and localized pages are prerendered where possible. New CMS blog slugs render on demand.
+- Edit page titles and descriptions in the **SEO** section of `/admin`; edit each post's SEO title, meta description, and URL slug in **Blog posts and article SEO**.
+- The sitemap includes public routes and published blog slugs from localized site content. `robots.txt` points to it and disallows `/admin` and `/api/`.
+- Canonical URLs and English/Arabic `hreflang` alternates are generated per localized route.
+- JSON-LD includes EducationalOrganization, Course, FAQPage, BlogPosting, and BreadcrumbList data where applicable.
+- Public CMS reads are cached for five minutes and invalidated when an owner publishes changes. Images use Next.js optimization with AVIF/WebP output; local fonts use `font-display: swap`.
 
 ## Deployment
 
-Deploy `web/` to Vercel (or any Node host). Set env if needed for custom domain.
-
-```bash
-vercel          # from web/ directory
-```
+Deploy `frontend/` and `backend/` as separate Node services. Set `BACKEND_API_URL` in the frontend and set `FRONTEND_ORIGINS`, Supabase credentials, and `SESSION_SECRET` in the backend.

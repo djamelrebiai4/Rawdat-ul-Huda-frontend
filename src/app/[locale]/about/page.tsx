@@ -8,20 +8,22 @@ import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { RubElHizb } from "@/components/rub-el-hizb";
 import { Award, BookOpenCheck, Users } from "lucide-react";
-import { buildMetadata, breadcrumbSchema } from "@/lib/seo";
+import { buildPageMetadata, breadcrumbSchema } from "@/lib/seo";
 import { JsonLd } from "@/components/json-ld";
 
 type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export function generateMetadata({ params }: Props): Metadata {
-  return buildMetadata({
-    title: "About — Your Tajweed Teacher | Rawdat ul-Huda Quran Academy",
-    description:
-      "Meet your Rawdat ul-Huda Quran Academy teacher: ijazah-certified in Quranic recitation with years of experience teaching students worldwide.",
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return buildPageMetadata({
+    pageKey: "about",
+    fallbackTitle: "About Rawdat ul-Huda | Quran Learning Online",
+    fallbackDescription:
+      "Meet the qualified Quran teacher behind Rawdat ul-Huda and learn about the academy's approach to Tajweed, Arabic, and Quran memorization.",
     path: "/about",
-    locale: "en",
+    locale,
   });
 }
 
@@ -45,7 +47,7 @@ export default async function AboutPage({ params }: Props) {
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: "About", path: "/about" },
-          ]),
+          ], locale),
         ]}
       />
       <PageHero eyebrow="About" title={t("title")} subtitle={t("subtitle")} />

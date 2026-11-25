@@ -4,10 +4,11 @@ import { whatsappLink } from "@/lib/site";
 
 export function FloatingWhatsApp() {
   const t = useTranslations("whatsapp");
+  const siteT = useTranslations("site");
 
   return (
     <a
-      href={whatsappLink(t("message"))}
+      href={whatsappLink(t("message"), siteT("whatsappNumber"))}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={t("floating")}

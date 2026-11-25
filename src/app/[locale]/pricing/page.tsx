@@ -7,20 +7,22 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Check, ShieldCheck, PauseCircle, RefreshCcw, CalendarX } from "lucide-react";
-import { buildMetadata, breadcrumbSchema } from "@/lib/seo";
+import { buildPageMetadata, breadcrumbSchema } from "@/lib/seo";
 import { JsonLd } from "@/components/json-ld";
 
 type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export function generateMetadata({ params }: Props): Metadata {
-  return buildMetadata({
-    title: "Pricing — Simple Monthly Plans | Rawdat ul-Huda Quran Academy",
-    description:
-      "Transparent pricing for 1-on-1 Quran and Arabic classes. From $49/month. No hidden fees, cancel or pause anytime.",
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return buildPageMetadata({
+    pageKey: "pricing",
+    fallbackTitle: "Online Quran Class Pricing | Rawdat ul-Huda",
+    fallbackDescription:
+      "Compare transparent monthly plans for one-to-one Quran and Arabic lessons. No hidden fees, with flexible cancellation and pause options.",
     path: "/pricing",
-    locale: "en",
+    locale,
   });
 }
 
@@ -53,7 +55,7 @@ export default async function PricingPage({ params }: Props) {
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: "Pricing", path: "/pricing" },
-          ]),
+          ], locale),
         ]}
       />
       <PageHero eyebrow="Pricing" title={t("title")} subtitle={t("subtitle")} />

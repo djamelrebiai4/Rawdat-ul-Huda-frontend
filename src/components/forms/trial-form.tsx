@@ -13,6 +13,7 @@ type FormState = "idle" | "submitting" | "success" | "error";
 export function TrialForm() {
   const t = useTranslations("contact.trial");
   const te = useTranslations("contact.form");
+  const siteT = useTranslations("site");
   const [state, setState] = useState<FormState>("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [values, setValues] = useState({
@@ -39,7 +40,7 @@ export function TrialForm() {
     setState("submitting");
 
     const text = [
-      `New trial request from ${site.name} website`,
+      `New trial request from ${siteT("name")} website`,
       `Name: ${values.name}`,
       `Email: ${values.email}`,
       `Phone: ${values.phone}`,
@@ -49,7 +50,7 @@ export function TrialForm() {
     ].join("\n");
 
     const encoded = encodeURIComponent(text);
-    const wa = `https://wa.me/${site.whatsappNumber.replace(/[^0-9]/g, "")}?text=${encoded}`;
+    const wa = `https://wa.me/${siteT("whatsappNumber").replace(/[^0-9]/g, "")}?text=${encoded}`;
     setTimeout(() => setState("success"), 600);
     window.open(wa, "_blank", "noopener,noreferrer");
   };

@@ -12,6 +12,7 @@ type FormState = "idle" | "submitting" | "success" | "error";
 
 export function ContactForm() {
   const t = useTranslations("contact.form");
+  const siteT = useTranslations("site");
   const [state, setState] = useState<FormState>("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [values, setValues] = useState({
@@ -37,7 +38,7 @@ export function ContactForm() {
     setState("submitting");
 
     const text = [
-      `New contact from ${site.name} website`,
+      `New contact from ${siteT("name")} website`,
       `Name: ${values.name}`,
       `Email: ${values.email}`,
       `Phone: ${values.phone}`,
@@ -45,7 +46,7 @@ export function ContactForm() {
     ].join("\n");
 
     const encoded = encodeURIComponent(text);
-    const wa = `https://wa.me/${site.whatsappNumber.replace(/[^0-9]/g, "")}?text=${encoded}`;
+    const wa = `https://wa.me/${siteT("whatsappNumber").replace(/[^0-9]/g, "")}?text=${encoded}`;
     setTimeout(() => setState("success"), 600);
     window.open(wa, "_blank", "noopener,noreferrer");
   };

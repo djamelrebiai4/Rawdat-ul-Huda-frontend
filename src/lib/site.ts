@@ -8,7 +8,16 @@ export const site = {
   twitter: "https://x.com/ModdakirApp",
 } as const;
 
-export function whatsappLink(message: string) {
+export const editableSiteSettings = {
+  name: site.name,
+  whatsappNumber: site.whatsappNumber,
+  whatsappDisplay: site.whatsappDisplay,
+  email: site.email,
+  facebook: site.facebook,
+  twitter: site.twitter,
+} as const;
+
+export function whatsappLink(message: string, whatsappNumber: string = site.whatsappNumber) {
   const text = encodeURIComponent(message);
-  return `https://wa.me/${site.whatsappNumber.replace(/[^0-9]/g, "")}?text=${text}`;
+  return `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, "")}?text=${text}`;
 }

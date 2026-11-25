@@ -7,7 +7,7 @@ import { routing } from "@/i18n/routing";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/footer";
 import { FloatingWhatsApp } from "@/components/layout/floating-whatsapp";
-import { buildMetadata, organizationSchema } from "@/lib/seo";
+import { buildMetadata, buildPageMetadata, organizationSchema } from "@/lib/seo";
 import { JsonLd } from "@/components/json-ld";
 import "@/styles/globals.css";
 
@@ -39,13 +39,16 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export function generateMetadata({ params }: Props): Metadata {
-  return buildMetadata({
-    title: "Rawdat ul-Huda Quran Academy | 1-on-1 Tajweed & Arabic Classes",
-    description:
-      "1-on-1 Tajweed, Quranic Arabic and Noorani Qaida classes for adults and kids, anywhere in the world. Book a free trial class.",
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  return buildPageMetadata({
+    pageKey: "home",
+    fallbackTitle: "Online Quran Classes | Rawdat ul-Huda Quran Academy",
+    fallbackDescription:
+      "Learn Quran recitation, Tajweed, and Arabic online with qualified teachers. Get one-to-one lessons for all ages, flexible schedules, and a free trial class.",
     path: "/",
-    locale: "en",
+    locale,
   });
 }
 

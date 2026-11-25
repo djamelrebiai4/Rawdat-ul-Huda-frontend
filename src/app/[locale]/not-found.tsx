@@ -1,11 +1,15 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { ButtonLink } from "@/components/ui/button-link";
 import { RubElHizb } from "@/components/rub-el-hizb";
 
-export default function NotFoundPage() {
-  const t = useTranslations("notFound");
+export const metadata: Metadata = {
+  title: "Page not found | Rawdat ul-Huda",
+  robots: { index: false, follow: false },
+};
+
+export default async function NotFoundPage() {
+  const t = await getTranslations("notFound");
 
   return (
     <section className="bg-background py-24 sm:py-32">

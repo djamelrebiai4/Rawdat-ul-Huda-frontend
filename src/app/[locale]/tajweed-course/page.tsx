@@ -8,20 +8,22 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button-link";
 import { CheckCircle2, GraduationCap } from "lucide-react";
-import { buildMetadata, courseSchema, breadcrumbSchema } from "@/lib/seo";
+import { buildPageMetadata, courseSchema, breadcrumbSchema } from "@/lib/seo";
 import { JsonLd } from "@/components/json-ld";
 
 type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export function generateMetadata({ params }: Props): Metadata {
-  return buildMetadata({
-    title: "Tajweed — Learn to Read Quran from Zero | Rawdat ul-Huda Quran Academy",
-    description:
-      "Learn to read the Quran with zero Arabic background. Tajweed foundations classes 1-on-1 online. 3-6 months to reading. Book a free trial.",
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return buildPageMetadata({
+    pageKey: "tajweed",
+    fallbackTitle: "Online Tajweed Course for Beginners | Rawdat ul-Huda",
+    fallbackDescription:
+      "Learn to read the Quran with zero Arabic background through one-to-one online Tajweed lessons. Build strong foundations and book a free trial class.",
     path: "/tajweed-course",
-    locale: "en",
+    locale,
   });
 }
 
@@ -38,16 +40,15 @@ export default async function TajweedCoursePage({ params }: Props) {
       <JsonLd
         data={[
           courseSchema({
-            name: "Tajweed",
-            description:
-              "Beginner course to learn reading Arabic and the Quran from absolute zero.",
+            name: t("title"),
+            description: t("subtitle"),
             locale,
             path: "/tajweed-course",
           }),
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: "Tajweed", path: "/tajweed-course" },
-          ]),
+          ], locale),
         ]}
       />
       <PageHero eyebrow="Beginner" title={t("title")} subtitle={t("subtitle")} />
